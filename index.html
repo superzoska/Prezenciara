@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Prezenciara - Sklep</title>
@@ -31,7 +32,7 @@
     margin: 0 0 0.3rem;
   }
   header p {
-    margin: 0;
+    margin-top: 1rem;
     font-weight: 300;
   }
   main {
@@ -58,6 +59,7 @@
     height: 120px;
     object-fit: cover;
     border-radius: 8px;
+    cursor: pointer;
   }
   .details {
     flex: 1;
@@ -67,6 +69,7 @@
   .details h3 {
     margin: 0 0 0.3rem;
     color: var(--primary-color);
+    cursor: pointer;
   }
   .details p {
     margin: 0 0 0.5rem;
@@ -186,6 +189,18 @@
     align-self: center;
     user-select: none;
   }
+  /* Edycja ilości w koszyku */
+  .cart-item-qty {
+    margin-top: 6px;
+  }
+  .cart-item-qty input {
+    width: 40px;
+    padding: 2px 6px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
   #cart-message {
     width: 100%;
     margin-top: 1rem;
@@ -222,8 +237,10 @@
 <body>
 
 <header>
-  <h1 contenteditable="false" id="shop-name">Prezenciara</h1>
-  <p contenteditable="false" id="shop-desc">Tutaj sprzedaje prezenty</p>
+  <img src="zdjęcia/logo.jpeg" alt="Logo" style="height: 72px;border-radius: 12px; vertical-align: middle; margin-right: 10px;">
+  <h1 contenteditable="false" id="shop-name" style="font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem; display: inline-block; vertical-align: middle;">Prezenciara</h1>
+  <p contenteditable="false" id="shop-desc">Opis, który możesz edytować tutaj.</p>
 </header>
 
 <main>
@@ -242,18 +259,18 @@
     <span class="close-btn" id="close-cart" aria-label="Zamknij koszyk">&times;</span>
     <h2 id="cart-title">Twój koszyk</h2>
     <div id="cart-items"></div>
-    <textarea id="cart-message" placeholder="Dodaj wiadomość do zamówienia..."></textarea>
-    <button id="checkout-btn" disabled>Zapłać z PayU</button>
+    <textarea id="cart-message" placeholder="Napisz z jakiej okazji to prezent, zainteresowania, pomysły, rzeczy do unikania itp..."></textarea>
+    <button id="checkout-btn" disabled>Wyślij maila z zamówieniem</button>
   </div>
 </div>
 
 <script>
   const products = [
-    { id: 'p1', name: 'Mały pakiet', desc: 'Mały pakiet do spersonalizowania', price: 100.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png' },
-    { id: 'p2', name: 'Produkt 2', desc: 'Krótki opis produktu 2.', price: 60.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png' },
-    { id: 'p3', name: 'Produkt 3', desc: 'Krótki opis produktu 3.', price: 55.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png'},
-    { id: 'p4', name: 'Produkt 4', desc: 'Krótki opis produktu 4.', price: 70.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png' },
-    { id: 'p5', name: 'Produkt 5', desc: 'Krótki opis produktu 5.', price: 85.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png'},
+    { id: 'p1', name: 'Mały pakiet', desc: 'Mały pakiet do spersonalizowania', price: 60.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png' },
+    { id: 'p2', name: 'Średni pakiet', desc: 'Krótki opis produktu 2.', price: 100.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png' },
+    { id: 'p3', name: 'Duży pakiet', desc: 'Krótki opis produktu 3.', price: 150.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png'},
+    { id: 'p4', name: 'Upominek', desc: 'Drobny upominek dla współpracownika, szefa lub dalszego znajomego.', price: 30.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png' },
+    { id: 'p5', name: 'Słodki bukiet', desc: 'Krótki opis produktu 5.', price: 150.00, img: 'zdjęcia/bukiet-prezentowy-na-18-urodziny.png'},
   ];
 
   const productList = document.getElementById('product-list');
@@ -269,20 +286,24 @@
 
   function renderProducts() {
     productList.innerHTML = '';
-    for(const p of products) {
+    products.forEach(p => {
       const div = document.createElement('div');
       div.className = 'product';
       div.innerHTML = `
-        <img src="${p.img}" alt="${p.name}" />
+        <a href="product.html?id=${p.id}" style="flex-shrink:0;">
+          <img src="${p.img}" alt="${p.name}" />
+        </a>
         <div class="details">
-          <h3>${p.name}</h3>
+          <a href="product.html?id=${p.id}" style="color: inherit; text-decoration: none;">
+            <h3>${p.name}</h3>
+          </a>
           <p>${p.desc}</p>
           <div class="price">${p.price.toFixed(2)} zł</div>
           <button class="btn-add" data-id="${p.id}">Dodaj do koszyka</button>
         </div>
       `;
       productList.appendChild(div);
-    }
+    });
   }
 
   function updateCartCount() {
@@ -305,7 +326,9 @@
         <img src="${product.img}" alt="${product.name}" />
         <div class="cart-item-details">
           <h4>${product.name}</h4>
-          <div>Ilość: ${item.qty}</div>
+          <div class="cart-item-qty">
+            Ilość: <input type="number" min="1" value="${item.qty}" data-id="${item.id}" />
+          </div>
           <div class="price">${(product.price * item.qty).toFixed(2)} zł</div>
         </div>
         <div class="cart-item-remove" data-id="${item.id}" aria-label="Usuń produkt">&times;</div>
@@ -359,7 +382,22 @@
     }
   });
 
-  // Tylko ta funkcja zmieniona - otwieranie maila z podsumowaniem
+  // Obsługa zmiany ilości w koszyku
+  cartItemsContainer.addEventListener('input', e => {
+    if(e.target.tagName === 'INPUT' && e.target.type === 'number') {
+      const id = e.target.dataset.id;
+      let val = parseInt(e.target.value);
+      if(isNaN(val) || val < 1) val = 1;
+      e.target.value = val;
+      const item = cart.find(i => i.id === id);
+      if(item) {
+        item.qty = val;
+        saveCart();
+      }
+    }
+  });
+
+  // Mail z zamówieniem
   checkoutBtn.addEventListener('click', () => {
     if(cart.length === 0) {
       alert('Koszyk jest pusty!');
@@ -389,7 +427,6 @@
     }
 
     bodyLines.push('');
-
 
     const body = encodeURIComponent(bodyLines.join('\n'));
     const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
